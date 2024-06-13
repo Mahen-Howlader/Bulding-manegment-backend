@@ -48,6 +48,15 @@ async function run() {
             const result = await usersCollection.insertOne(data)
             res.send(result)
         })
+
+        app.get("/user/:email", async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email }
+            const result = await usersCollection.findOne(query);
+            res.send(result)
+        })
+
+
         app.patch("/changerole/:email", async (req, res) => {
             const email = req.params.email;
             const role = req.body.role;
@@ -92,7 +101,7 @@ async function run() {
 
         // agreement
         app.get("/agreement", async (req, res) => {
-            const query = {status : "Pending"}
+            const query = { status: "Pending" }
             const result = await agreementCollection.find(query).toArray()
             res.send(result)
         })
@@ -157,7 +166,7 @@ async function run() {
             const result = await usersCollection.find(query).toArray()
             res.send(result)
         })
-        
+
         app.patch("/rolechange/:email", async (req, res) => {
             const email = req.params.email;
             const query = { email: email };
@@ -178,23 +187,29 @@ async function run() {
         })
 
         // couponCodeCollection
-        app.post("/coupon", async (req,res) => {
+        app.post("/coupon", async (req, res) => {
             const data = req.body;
-            const result  = await couponCodeCollection.insertOne(data)
+            const result = await couponCodeCollection.insertOne(data)
             res.send(result)
         })
 
-        app.get("/coupon", async (req,res) => {
-            const result  = await couponCodeCollection.find().toArray()
-            res.send(result)
-        })
-        
-        app.post("/coupon", async (req,res) => {
-            const data = req.body;
-            const result  = await couponCodeCollection.insertOne(data)
+        app.get("/coupon", async (req, res) => {
+            const result = await couponCodeCollection.find().toArray()
             res.send(result)
         })
 
+        app.post("/coupon", async (req, res) => {
+            const data = req.body;
+            const result = await couponCodeCollection.insertOne(data)
+            res.send(result)
+        })
+
+
+        // announcemen all data
+        app.get("/announcement", async (req, res) => {
+            const resutl = await announcemenCollection.find().toArray()
+            res.send(resutl)
+        })
 
 
 
