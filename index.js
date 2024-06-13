@@ -184,6 +184,17 @@ async function run() {
             res.send(result)
         })
 
+        app.get("/coupon", async (req,res) => {
+            const result  = await couponCodeCollection.find().toArray()
+            res.send(result)
+        })
+        
+        app.post("/coupon", async (req,res) => {
+            const data = req.body;
+            const result  = await couponCodeCollection.insertOne(data)
+            res.send(result)
+        })
+
 
 
 
