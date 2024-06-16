@@ -6,11 +6,16 @@ const port = process.env.PORT || 8000
 // const { Resend } = require('resend')
 // const resend = new Resend(api_key)
 // middleware
+
+
 const corsOptions = {
     origin: ['http://localhost:5173', 'http://localhost:5174'],
     credentials: true,
     optionSuccessStatus: 200,
 }
+
+
+
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@cluster0.iagloem.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -43,7 +48,7 @@ async function run() {
             const query = { email: email }
             const resultQuery = await usersCollection.findOne(query)
             if (resultQuery) {
-                return res.send(resultQuery)
+                return res.send("All ready exist");
             }
             const result = await usersCollection.insertOne(data)
             res.send(result)
@@ -212,9 +217,27 @@ async function run() {
         })
 
 
+        // makePayment
 
+        app.get(`/makePayment/:email`, async (req,res) => {
+            const email = req.params.email;
+            const query = {userEmail : email}
+            const result = await agreementCollection.findOne(query)
+            res.send(result)
+        })
 
-
+        // coupon
+        app.get("/coupon/:code", async (req,res) => {
+            const code = req.params.code;
+            // console.log(code)
+            const query = {coupon : code};
+            const result = await couponCodeCollection.findOne(query)
+            if (!result) {
+                return res.send({ message: "Coupon is not valid !" })
+            } else {
+                res.send(result)
+            }
+        })
 
 
 
