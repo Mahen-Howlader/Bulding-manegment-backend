@@ -3,6 +3,8 @@ const app = express()
 var cors = require('cors')
 require('dotenv').config()
 const port = process.env.PORT || 8000
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+console.log("stripe", stripe)
 // const { Resend } = require('resend')
 // const resend = new Resend(api_key)
 // middleware
@@ -39,6 +41,7 @@ async function run() {
     const agreementCollection = client.db("BUILDING_MANAGEMENT").collection("agreement");
     const announcemenCollection = client.db("BUILDING_MANAGEMENT").collection("announcemen");
     const couponCodeCollection = client.db("BUILDING_MANAGEMENT").collection("coupon");
+    const paymentsHistoryCollection = client.db("BUILDING_MANAGEMENT").collection("history");
 
     try {
         // agreement data 
@@ -217,20 +220,28 @@ async function run() {
         })
 
 
+        app.get("/announcementdetails/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = {_id : new ObjectId(id)}
+            const resutl = await announcemenCollection.findOne(query)
+            res.send(resutl)
+        })
+
+
         // makePayment
 
-        app.get(`/makePayment/:email`, async (req,res) => {
+        app.get(`/makePayment/:email`, async (req, res) => {
             const email = req.params.email;
-            const query = {userEmail : email}
+            const query = { userEmail: email }
             const result = await agreementCollection.findOne(query)
             res.send(result)
         })
 
         // coupon
-        app.get("/coupon/:code", async (req,res) => {
+        app.get("/coupon/:code", async (req, res) => {
             const code = req.params.code;
             // console.log(code)
-            const query = {coupon : code};
+            const query = { coupon: code };
             const result = await couponCodeCollection.findOne(query)
             if (!result) {
                 return res.send({ message: "Coupon is not valid !" })
@@ -240,6 +251,53 @@ async function run() {
         })
 
 
+        // create-payment-intent?
+
+        // app.post("/paymentshistory/:allData", async (req, res) => {
+        //     const data = req.params.allData
+        //     const result = await paymentsFareCollection.insertOne(data);
+        //     res.send(result)
+        // })
+
+
+
+        app.post("/create-payment-intent", async (req, res) => {
+            const { price } = req.body;
+            const amount = parseInt(price * 100);
+            console.log("amount insite", amount)
+
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: amount,
+                currency: "usd",
+                payment_method_types: ["card"],
+            })
+
+            res.send({
+                clientSecret: paymentIntent.client_secret,
+            });
+
+        })
+
+
+
+
+
+
+        // paymentHistory
+        app.post("/paymentHistory", async (req, res) => {
+            const data = req.body;
+            console.log(data)
+            const result = await paymentsHistoryCollection.insertOne(data);
+            res.send(result)
+        })
+
+
+        app.get("/paymentHistory/:email", async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const result = await paymentsHistoryCollection.find(query).toArray();
+            res.send(result)
+        })
 
         // Connect the client to the server	(optional starting in v4.7)
         // Send a ping to confirm a successful connection
