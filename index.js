@@ -4,7 +4,7 @@ var cors = require('cors')
 require('dotenv').config()
 const port = process.env.PORT || 8000
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-console.log("stripe", stripe)
+// console.log("stripe", stripe)
 // const { Resend } = require('resend')
 // const resend = new Resend(api_key)
 // middleware
@@ -96,7 +96,7 @@ async function run() {
         app.post("/agreement", async (req, res) => {
             const data = req.body;
             const email = { userEmail: data?.userEmail };
-            console.log(email)
+            // console.log(email)
             const alredyExist = await agreementCollection.findOne(email)
             if (alredyExist) {
                 return res.send({ message: "User alredy exist" })
@@ -222,7 +222,7 @@ async function run() {
 
         app.get("/announcementdetails/:id", async (req, res) => {
             const id = req.params.id;
-            const query = {_id : new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             const resutl = await announcemenCollection.findOne(query)
             res.send(resutl)
         })
@@ -251,6 +251,12 @@ async function run() {
         })
 
 
+        app.get("/couponcard", async (req, res) => {
+            const result = await couponCodeCollection.find().toArray();
+            res.send(result)
+        })
+
+
         // create-payment-intent?
 
         // app.post("/paymentshistory/:allData", async (req, res) => {
@@ -264,7 +270,7 @@ async function run() {
         app.post("/create-payment-intent", async (req, res) => {
             const { price } = req.body;
             const amount = parseInt(price * 100);
-            console.log("amount insite", amount)
+            // console.log("amount insite", amount)
 
             const paymentIntent = await stripe.paymentIntents.create({
                 amount: amount,
@@ -286,7 +292,7 @@ async function run() {
         // paymentHistory
         app.post("/paymentHistory", async (req, res) => {
             const data = req.body;
-            console.log(data)
+            // console.log(data)
             const result = await paymentsHistoryCollection.insertOne(data);
             res.send(result)
         })
@@ -298,6 +304,70 @@ async function run() {
             const result = await paymentsHistoryCollection.find(query).toArray();
             res.send(result)
         })
+
+
+
+
+        // admin profile 
+        // app.get("/admin-state", async (req, res) => {
+        //     const users = await usersCollection.estimatedDocumentCount();
+        //     const rooms = await apartmentCollection.estimatedDocumentCount();
+        //     const agreement = await agreementCollection.estimatedDocumentCount();
+        //     const payment = await paymentsHistoryCollection.estimatedDocumentCount();
+
+        //     //// member 
+        //     const member = await usersCollection.find().toArray()
+        //     const members = await member.filter((total,payment) => total.role === "member").length
+
+
+        //     res.send({users,agreement,members,rooms})
+        // })
+        // admin profile 
+        app.get("/admin-state", async (req, res) => {
+            try {
+                const users = await usersCollection.estimatedDocumentCount();
+                const rooms = await apartmentCollection.estimatedDocumentCount();
+                const agreement = await agreementCollection.estimatedDocumentCount();
+
+                // Member count
+                const members = await usersCollection.countDocuments({ role: "member" });
+
+                // Available rooms count
+                const availableRooms = await rooms - members;
+                console.log("avilableRoom", availableRooms)
+                // Calculate the percentage of available rooms
+                const percentageAvailableRooms = rooms > 0 ? (availableRooms / rooms) * 100 : 0;
+
+                // Unavailable rooms count
+                const unavailableRooms = await rooms - members;
+
+                // Calculate the percentage of unavailable rooms
+                const percentageUnavailableRooms = rooms > 0 ? (unavailableRooms / rooms) * 100 : 0;
+
+                // Agreement rooms count (assuming rooms with agreements have isAgreed field set to true)
+                const agreementRooms = await apartmentCollection.countDocuments({ isAgreed: true });
+
+                // Calculate the percentage of agreement rooms
+                const percentageAgreementRooms = rooms > 0 ? (agreementRooms / rooms) * 100 : 0;
+
+                res.send({
+                    users,
+                    agreement,
+                    members,
+                    rooms,
+                    availableRooms,
+                    percentageAvailableRooms,
+                    unavailableRooms,
+                    percentageUnavailableRooms,
+                    agreementRooms,
+                    percentageAgreementRooms
+                });
+            } catch (error) {
+                console.error("Error fetching admin state:", error);
+                res.status(500).send({ error: "Internal Server Error" });
+            }
+        });
+
 
         // Connect the client to the server	(optional starting in v4.7)
         // Send a ping to confirm a successful connection
