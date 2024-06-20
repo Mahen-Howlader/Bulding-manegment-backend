@@ -1,4 +1,5 @@
-const express = require('express')
+const express = require('express');
+const jwt = require('jsonwebtoken');
 const app = express()
 var cors = require('cors')
 require('dotenv').config()
@@ -15,7 +16,6 @@ const corsOptions = {
     credentials: true,
     optionSuccessStatus: 200,
 }
-
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
@@ -35,6 +35,24 @@ const client = new MongoClient(uri, {
 app.use(cors(corsOptions))
 app.use(express.json())
 
+
+
+
+// middel ware to verify
+const verifyToke = (req, res, next) => {
+    if (!req.headers.authorization) {
+        return res.status(401).send({ message: "forbiden access" })
+    }
+    const token = req.headers.authorization.split(" ")[1];
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err,decoded) => {
+        if(err){
+            return res.status(401).send({message : "forbiden access"})
+        }
+        req.decoded = decoded;
+        next()
+    })
+}
+
 async function run() {
     const apartmentCollection = client.db("BUILDING_MANAGEMENT").collection("apartment");
     const usersCollection = client.db("BUILDING_MANAGEMENT").collection("user");
@@ -45,17 +63,13 @@ async function run() {
 
     try {
         // agreement data 
-        app.post("/user", async (req, res) => {
-            const data = req.body;
-            const email = data.email;
-            const query = { email: email }
-            const resultQuery = await usersCollection.findOne(query)
-            if (resultQuery) {
-                return res.send("All ready exist");
-            }
-            const result = await usersCollection.insertOne(data)
-            res.send(result)
-        })
+        app.post("/jwt", async (req, res) => {
+            const user = req.body;
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+                expiresIn: "7d"
+            });
+            res.send({ token });
+        });
 
         app.get("/user/:email", async (req, res) => {
             const email = req.params.email;
@@ -64,6 +78,18 @@ async function run() {
             res.send(result)
         })
 
+        app.post('/user', async (req, res) => {
+            const { name, email, role, status } = req.body;
+            // Check if the email already exists
+            const existingUser = await usersCollection.findOne({ email });
+            if (existingUser) {
+                return res.send("User alery exist database")
+            }
+            // Create a new user
+            const newUser = { name, email, role, status }
+            const result = await usersCollection.insertOne(newUser);
+            res.send(result)
+        });
 
         app.patch("/changerole/:email", async (req, res) => {
             const email = req.params.email;
@@ -170,6 +196,7 @@ async function run() {
 
         // admin 
         app.get("/member", async (req, res) => {
+            console.log(req.headers)
             const query = { role: "member" }
             const result = await usersCollection.find(query).toArray()
             res.send(result)
@@ -308,7 +335,7 @@ async function run() {
 
 
 
-        // admin profile 
+
         // app.get("/admin-state", async (req, res) => {
         //     const users = await usersCollection.estimatedDocumentCount();
         //     const rooms = await apartmentCollection.estimatedDocumentCount();
