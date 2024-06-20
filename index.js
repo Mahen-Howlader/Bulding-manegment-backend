@@ -41,17 +41,22 @@ app.use(express.json())
 // middel ware to verify
 const verifyToke = (req, res, next) => {
     if (!req.headers.authorization) {
-        return res.status(401).send({ message: "forbiden access" })
+        return res.status(401).send({ message: "unauthorized access" })
     }
     const token = req.headers.authorization.split(" ")[1];
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err,decoded) => {
-        if(err){
-            return res.status(401).send({message : "forbiden access"})
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).send({ message: "unauthorized access" })
         }
         req.decoded = decoded;
         next()
     })
 }
+
+
+
+
+
 
 async function run() {
     const apartmentCollection = client.db("BUILDING_MANAGEMENT").collection("apartment");
@@ -62,6 +67,42 @@ async function run() {
     const paymentsHistoryCollection = client.db("BUILDING_MANAGEMENT").collection("history");
 
     try {
+
+        const verifyAdmin = async (req, res, next) => {
+            const email = req.decoded.email;
+            const query = { email: email }
+            const user = await usersCollection.findOne(query);
+            const isAdmin = user?.role === "admin";
+            if (!isAdmin) {
+                return res.status(403).send({ message: "forbiden access" })
+            }
+            next()
+        }
+
+        // admin verifyToke 
+        app.get("/user/admin/:email", verifyToke, async (req, res) => {
+            const email = req.params.email;
+            if (email !== req.decoded.email) {
+                return res.status(403).send({ message: "unauthorized access" })
+            }
+
+            const query = { email: email };
+            const user = await usersCollection.findOne(query);
+            let admin = false;
+            if (user) {
+                admin = user?.role === "admin"
+            }
+            console.log(admin)
+            res.send({ admin })
+        })
+
+
+
+
+
+
+
+
         // agreement data 
         app.post("/jwt", async (req, res) => {
             const user = req.body;
@@ -195,8 +236,8 @@ async function run() {
 
 
         // admin 
-        app.get("/member", async (req, res) => {
-            console.log(req.headers)
+        app.get("/member", verifyToke,verifyAdmin, async (req, res) => {
+            // console.log("member token", req.headers)
             const query = { role: "member" }
             const result = await usersCollection.find(query).toArray()
             res.send(result)
