@@ -155,8 +155,20 @@ async function run() {
 
         // apartment data ?
         app.get("/apartment", async (req, res) => {
-            const result = await apartmentCollection.find().toArray()
+            console.log(req.query)
+            const page = parseInt(req.query.page);
+            const size = parseInt(req.query.size);
+
+
+            const result = await apartmentCollection.find().skip(page * size).limit(size).toArray()
             res.send(result)
+        })
+
+
+        // apartment pagination 
+        app.get("/paginationapartment", async (req,res) => {
+            const count = await apartmentCollection.estimatedDocumentCount();
+            res.send({count})
         })
 
         // agreement data 
@@ -401,7 +413,7 @@ async function run() {
                 const percentageAvailableRooms = rooms > 0 ? (availableRooms / rooms) * 100 : 0;
 
                 // Unavailable rooms count
-                const unavailableRooms = await rooms - members;
+                const unavailableRooms =  members;
 
                 // Calculate the percentage of unavailable rooms
                 const percentageUnavailableRooms = rooms > 0 ? (unavailableRooms / rooms) * 100 : 0;
