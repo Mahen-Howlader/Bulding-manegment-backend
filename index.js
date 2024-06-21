@@ -183,6 +183,7 @@ async function run() {
         // profile agreement 
         app.get("/agreement/:email", async (req, res) => {
             const email = req.params?.email;
+            console.log(email, "agrement email")
             const query = { userEmail: email }
             const result = await agreementCollection.findOne(query)
             res.send(result)
@@ -236,7 +237,7 @@ async function run() {
 
 
         // admin 
-        app.get("/member", verifyToke,verifyAdmin, async (req, res) => {
+        app.get("/member", verifyToke, verifyAdmin, async (req, res) => {
             // console.log("member token", req.headers)
             const query = { role: "member" }
             const result = await usersCollection.find(query).toArray()
@@ -256,14 +257,14 @@ async function run() {
         })
 
         // Announcemen
-        app.post("/announcemen", async (req, res) => {
+        app.post("/announcemen", verifyToke, verifyAdmin, async (req, res) => {
             const data = req.body;
             const result = await announcemenCollection.insertOne(data);
             res.send(result);
         })
 
         // couponCodeCollection
-        app.post("/coupon", async (req, res) => {
+        app.post("/coupon", verifyToke, verifyAdmin, async (req, res) => {
             const data = req.body;
             const result = await couponCodeCollection.insertOne(data)
             res.send(result)
@@ -274,11 +275,11 @@ async function run() {
             res.send(result)
         })
 
-        app.post("/coupon", async (req, res) => {
-            const data = req.body;
-            const result = await couponCodeCollection.insertOne(data)
-            res.send(result)
-        })
+        // app.post("/coupon", async (req, res) => {
+        //     const data = req.body;
+        //     const result = await couponCodeCollection.insertOne(data)
+        //     res.send(result)
+        // })
 
 
         // announcemen all data
@@ -293,6 +294,15 @@ async function run() {
             const query = { _id: new ObjectId(id) }
             const resutl = await announcemenCollection.findOne(query)
             res.send(resutl)
+        })
+
+        app.delete("/announcement/:id", async (req, res) => {
+            const id = req.params?.id;
+            console.log("id name", id)
+            const query = { _id: new ObjectId(id) };
+            const result = await announcemenCollection.deleteOne(query)
+            res.send(result)
+
         })
 
 
@@ -374,24 +384,8 @@ async function run() {
         })
 
 
-
-
-
-        // app.get("/admin-state", async (req, res) => {
-        //     const users = await usersCollection.estimatedDocumentCount();
-        //     const rooms = await apartmentCollection.estimatedDocumentCount();
-        //     const agreement = await agreementCollection.estimatedDocumentCount();
-        //     const payment = await paymentsHistoryCollection.estimatedDocumentCount();
-
-        //     //// member 
-        //     const member = await usersCollection.find().toArray()
-        //     const members = await member.filter((total,payment) => total.role === "member").length
-
-
-        //     res.send({users,agreement,members,rooms})
-        // })
         // admin profile 
-        app.get("/admin-state", async (req, res) => {
+        app.get("/admin-state", verifyToke, verifyAdmin, async (req, res) => {
             try {
                 const users = await usersCollection.estimatedDocumentCount();
                 const rooms = await apartmentCollection.estimatedDocumentCount();
