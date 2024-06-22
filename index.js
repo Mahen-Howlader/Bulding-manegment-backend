@@ -12,7 +12,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 
 const corsOptions = {
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    origin: ['http://localhost:5173', 'http://localhost:5174', "https://newprojectbulding.web.app", "https://dainty-jelly-3334f5.netlify.app"],
     credentials: true,
     optionSuccessStatus: 200,
 }
@@ -92,7 +92,7 @@ async function run() {
             if (user) {
                 admin = user?.role === "admin"
             }
-            console.log(admin)
+            // console.log(admin)
             res.send({ admin })
         })
 
@@ -166,9 +166,9 @@ async function run() {
 
 
         // apartment pagination 
-        app.get("/paginationapartment", async (req,res) => {
+        app.get("/paginationapartment", async (req, res) => {
             const count = await apartmentCollection.estimatedDocumentCount();
-            res.send({count})
+            res.send({ count })
         })
 
         // agreement data 
@@ -310,7 +310,7 @@ async function run() {
 
         app.delete("/announcement/:id", async (req, res) => {
             const id = req.params?.id;
-            console.log("id name", id)
+            // console.log("id name", id)
             const query = { _id: new ObjectId(id) };
             const result = await announcemenCollection.deleteOne(query)
             res.send(result)
@@ -389,9 +389,14 @@ async function run() {
 
 
         app.get("/paymentHistory/:email", async (req, res) => {
+            const filter = req?.query?.search
+            console.log("serarch",filter)
+            const search = {
+                month: { $regex: filter, $options: "i"}
+            }
             const email = req.params.email;
             const query = { email: email };
-            const result = await paymentsHistoryCollection.find(query).toArray();
+            const result = await paymentsHistoryCollection.find(search,query).toArray();
             res.send(result)
         })
 
@@ -408,12 +413,12 @@ async function run() {
 
                 // Available rooms count
                 const availableRooms = await rooms - members;
-                console.log("avilableRoom", availableRooms)
+                // console.log("avilableRoom", availableRooms)
                 // Calculate the percentage of available rooms
                 const percentageAvailableRooms = rooms > 0 ? (availableRooms / rooms) * 100 : 0;
 
                 // Unavailable rooms count
-                const unavailableRooms =  members;
+                const unavailableRooms = members;
 
                 // Calculate the percentage of unavailable rooms
                 const percentageUnavailableRooms = rooms > 0 ? (unavailableRooms / rooms) * 100 : 0;
