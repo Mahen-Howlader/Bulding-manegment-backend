@@ -15,8 +15,11 @@
 ```sh
 # Clone the project:
 
-[git clone https://github.com/0l1v3rr/github-readme-tech-stack.git](Client_side Repo)
-Server_side : [[git clone https://github.com/0l1v3rr/github-readme-tech-stack.git]
+Client_side Repo : git clone https://github.com/0l1v3rr/github-readme-tech-stack.git
+<?br>
+Server_side : git clone https://github.com/0l1v3rr/github-readme-tech-stack.git
+</br>
+
 cd github-readme-tech-stack
 
 # Install the dependencies:
