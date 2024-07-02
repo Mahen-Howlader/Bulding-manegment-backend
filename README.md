@@ -18,8 +18,6 @@
 Client_side Repo : git clone https://github.com/0l1v3rr/github-readme-tech-stack.git
 Server_side : git clone https://github.com/0l1v3rr/github-readme-tech-stack.git
 
-cd github-readme-tech-stack
-
 # Install the dependencies:
 npm i
 
@@ -29,7 +27,7 @@ npm run dev
 #Admin email: mahinhowlader12345@gmail.com
 #Admin password: 111111
 
-
+```sh
 ## 👉 Features
 
 - **Easy to use:** Creating a Tech Stack image is as simple as adding a markdown tag to your `profile README`.
@@ -40,4 +38,4 @@ npm run dev
 - **Badges:** github-readme-tech-stack uses [shields.io](https://shields.io/) badges and [simple-icons](https://simpleicons.org/) under the hood.
 - **Style:** github-readme-tech-stack is designed to match the style of [github-readme-streak-stats](https://github.com/DenverCoder1/github-readme-streak-stats), [github-readme-stats](https://github.com/anuraghazra/github-readme-stats) and many other cool tools.
 
-<hr>
+
