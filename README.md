@@ -10,6 +10,28 @@
 
 <hr>
 
+## ⚒️ Building from source
+
+```sh
+# Clone the project:
+
+Client_side : [git clone https://github.com/0l1v3rr/github-readme-tech-stack.git]
+Server_side : [[git clone https://github.com/0l1v3rr/github-readme-tech-stack.git]
+cd github-readme-tech-stack
+
+# Install the dependencies:
+npm i
+npm run prepare
+
+# Running the application:
+npm run dev
+
+# Running the storybook:
+npm run storybook
+```
+
+<hr>
+
 
 #Admin email: mahinhowlader12345@gmail.com
 #Admin password: 111111
@@ -18,4 +40,4 @@ Front-end Live Site Link: https://dainty-jelly-3334f5.netlify.app/
 
 Client Side Github Repository Link: https://github.com/programming-hero-web-course1/b9a12-client-side-devmahin
 
-Server Side Github Repository Link: https://github.com/programming-hero-web-course1/b9a12-server-side-devmahin
+Server Side Github Repository Link: 
