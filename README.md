@@ -28,9 +28,6 @@ npm run dev
 ```
 ## 👉 Features
 
-- **Easy to use:** Creating a Tech Stack image is as simple as adding a markdown tag to your `profile README`.
-- **Demo website:** github-readme-tech-stack has a demo website, where you can build your own card with no effort.
-- **Customizable:** Choose the technologies you want to showcase and customize the colors and icons to match your personal brand.
-- **Custom icons:** You can even upload and use your **own** `svg` icons if they don't already exist.
-- **Multiple themes:** These cards come with several pre-made themes that you can use. However, if none of the themes suits your style, you can easily create your **own**!
+- **Payment Features:** You can withdraw the payment every month if you want because the payment system is implemented here
+- **ADMIN** You can remove anyone from this website from its admin panel
 - **Authentication Features:** Email and password-based authentication for login and registration, with optional social media login. Password verification criteria and error messages are included.
