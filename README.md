@@ -33,6 +33,4 @@ npm run dev
 - **Customizable:** Choose the technologies you want to showcase and customize the colors and icons to match your personal brand.
 - **Custom icons:** You can even upload and use your **own** `svg` icons if they don't already exist.
 - **Multiple themes:** These cards come with several pre-made themes that you can use. However, if none of the themes suits your style, you can easily create your **own**!
-- **Badges:** github-readme-tech-stack uses [shields.io](https://shields.io/) badges and [simple-icons](https://simpleicons.org/) under the hood.
-- **Style:** github-readme-tech-stack is designed to match the style of [github-readme-streak-stats](https://github.com/DenverCoder1/github-readme-streak-stats), [github-readme-stats](https://github.com/anuraghazra/github-readme-stats) and many other cool tools.
-
+- **Authentication Features:** Email and password-based authentication for login and registration, with optional social media login. Password verification criteria and error messages are included.
