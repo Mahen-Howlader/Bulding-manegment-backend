@@ -15,7 +15,7 @@
 ```sh
 # Clone the project:
 
-Client_side : [git clone https://github.com/0l1v3rr/github-readme-tech-stack.git]
+[git clone https://github.com/0l1v3rr/github-readme-tech-stack.git](Client_side Repo)
 Server_side : [[git clone https://github.com/0l1v3rr/github-readme-tech-stack.git]
 cd github-readme-tech-stack
 
