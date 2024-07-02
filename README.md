@@ -16,9 +16,7 @@
 # Clone the project:
 
 Client_side Repo : git clone https://github.com/0l1v3rr/github-readme-tech-stack.git
-<?br>
 Server_side : git clone https://github.com/0l1v3rr/github-readme-tech-stack.git
-</br>
 
 cd github-readme-tech-stack
 
@@ -32,9 +30,3 @@ npm run dev
 
 #Admin email: mahinhowlader12345@gmail.com
 #Admin password: 111111
-
-Front-end Live Site Link: https://dainty-jelly-3334f5.netlify.app/
-
-Client Side Github Repository Link: https://github.com/programming-hero-web-course1/b9a12-client-side-devmahin
-
-Server Side Github Repository Link: 
