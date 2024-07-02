@@ -31,7 +31,7 @@ npm run dev
 #Admin email: mahinhowlader12345@gmail.com
 #Admin password: 111111
 
-
+<hr>
 
 ## 👉 Features
 
