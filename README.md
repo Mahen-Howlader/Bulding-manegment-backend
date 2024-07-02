@@ -26,12 +26,9 @@ npm i
 # Running the application:
 npm run dev
 
-<hr>
-
 #Admin email: mahinhowlader12345@gmail.com
 #Admin password: 111111
 
-<hr>
 
 ## 👉 Features
 
