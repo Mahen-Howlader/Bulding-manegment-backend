@@ -24,17 +24,11 @@ cd github-readme-tech-stack
 
 # Install the dependencies:
 npm i
-npm run prepare
 
 # Running the application:
 npm run dev
 
-# Running the storybook:
-npm run storybook
-```
-
 <hr>
-
 
 #Admin email: mahinhowlader12345@gmail.com
 #Admin password: 111111
